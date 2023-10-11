@@ -1,4 +1,9 @@
 ---
+- name: Make repo configs writeable
+  file:
+    path: /etc/yum.repos.d/
+    attr: -i
+    recurse: true
 
 - name: Ensure OpenHPC repos
   ansible.builtin.yum_repository:
@@ -44,6 +49,12 @@
   yum:
     name: "{{ openhpc_slurm_pkglist | reject('eq', '') }}"
   when: openhpc_slurm_pkglist | default(false, true)
+
+- name: Make repo configs immutable
+  file:
+    path: /etc/yum.repos.d/
+    attr: +i
+    recurse: true
 
 - name: Install packages from openhpc_packages variable
   yum:
